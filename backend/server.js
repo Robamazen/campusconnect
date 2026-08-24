@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
 });
 
 // Routes — uncomment as each person's routes land on main
-// app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/auth', require('./routes/authRoutes'));
 // app.use('/api/users', require('./routes/userRoutes'));
 // app.use('/api/events', require('./routes/eventRoutes'));
 // app.use('/api/registrations', require('./routes/registrationRoutes'));
