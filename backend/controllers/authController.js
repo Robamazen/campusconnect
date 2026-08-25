@@ -20,7 +20,7 @@ const register = async (req, res, next) => {
         }
 
         const existingUser = await User.findOne({email});
-        if(!existingUser) {
+        if(existingUser) {
             const error = new Error('An account with this email already exists!');
             error.statusCode = 400;
             return next(error);
@@ -41,11 +41,12 @@ const register = async (req, res, next) => {
             userData.status = 'pending';
         } else {
             userData.role = 'student';
+            userData.status = 'approved';
         }
 
         const user = await User.create(userData);
 
-        const token = generateToken(user._id, role);
+        const token = generateToken(user._id, user.role);
 
         res.status(201).json({
             success: true,
@@ -76,6 +77,13 @@ const login = async (req, res, next) => {
 
         const user = await User.findOne({email}).select('+password');
         if(!user){
+            const error = new Error('Invalid credentials');
+            error.statusCode = 401;
+            return next(error);
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if(!isMatch){
             const error = new Error('Invalid credentials');
             error.statusCode = 401;
             return next(error);
