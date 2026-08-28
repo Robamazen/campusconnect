@@ -1,6 +1,6 @@
 const CATEGORIES = ['Academic', 'Social', 'Sports', 'Tech', 'Arts', 'Volunteering', 'Other'];
 
-const HF_API_URL = 'https://api-inference.huggingface.co/models/facebook/bart-large-mnli';
+const HF_API_URL = 'https://router.huggingface.co/hf-inference/models/facebook/bart-large-mnli';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -43,13 +43,14 @@ const classifyEventCategories = async (description) => {
         }
 
         const data = await response.json();
-        if(data.labels && data.labels.length > 0 && CATEGORIES.includes(data.labels[0])){
-            return data.labels[0];
+        const topLabel = Array.isArray(data) && data.length > 0 ? data[0].label : undefined;
+        if (topLabel && CATEGORIES.includes(topLabel)) {
+            return topLabel;
         }
 
         return 'Other';
     } catch (err){
-        console.error('Hugging Face classification failed:', err.message);
+        console.error('Hugging Face classification failed:', err.message, err.cause || '');
         return 'Other';
     }
 };
