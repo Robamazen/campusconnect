@@ -51,7 +51,8 @@ const eventSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
-  }
+  },
+  filledSlots: { type: Number, default: 0 }
 });
 
 module.exports = mongoose.model('Event', eventSchema);
