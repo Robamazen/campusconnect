@@ -39,6 +39,10 @@ function Mark({ success }) {
 export default function RsvpModal({ open, variant, event, registration, errorMessage, onClose }) {
   if (!open) return null;
   const success = variant === 'success';
+  // The "seats taken" stat only makes sense when the failure was actually about
+  // capacity — a generic default message means the endpoint didn't say otherwise,
+  // but a specific one (already registered, event closed, etc.) should suppress it.
+  const isCapacityError = !errorMessage || /capacity|full/i.test(errorMessage);
 
   const timestamp = new Date().toLocaleString(undefined, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 
@@ -96,7 +100,8 @@ export default function RsvpModal({ open, variant, event, registration, errorMes
             </div>
           ) : (
             !success &&
-            event && (
+            event &&
+            isCapacityError && (
               <div className="flex gap-5.5 pt-1">
                 <div>
                   <div className="font-heading font-extrabold text-xl tracking-tight">

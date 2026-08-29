@@ -40,13 +40,11 @@ export function AuthProvider({ children }) {
 
   const login = (token, user) => {
     localStorage.setItem('cc_token', token);
-    localStorage.setItem('cc_user', JSON.stringify(user));
     dispatch({ type: 'LOGIN_SUCCESS', payload: { token, user } });
   };
 
   const logout = () => {
     localStorage.removeItem('cc_token');
-    localStorage.removeItem('cc_user');
     dispatch({ type: 'LOGOUT' });
   };
 

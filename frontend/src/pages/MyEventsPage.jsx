@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import EventCard from '../components/EventCard';
 import Aperture from '../components/Aperture';
+import ConfirmModal from '../components/ConfirmModal';
 import api from '../services/api';
 
 export default function MyEventsPage() {
@@ -12,6 +13,7 @@ export default function MyEventsPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('All');
   const [deletingId, setDeletingId] = useState(null);
+  const [confirmTarget, setConfirmTarget] = useState(null); // event pending delete confirmation
 
   const fetchMine = useCallback(async () => {
     setLoading(true);
@@ -29,14 +31,17 @@ export default function MyEventsPage() {
     navigate(target === 'registrants' ? `/events/${event._id}/registrants` : `/events/${event._id}/edit`);
   };
 
-  const handleDelete = async (event) => {
-    if (!window.confirm(`Delete "${event.title}"? This cannot be undone.`)) return;
-    setDeletingId(event._id);
+  const handleDelete = (event) => setConfirmTarget(event);
+
+  const confirmDelete = async () => {
+    if (!confirmTarget) return;
+    setDeletingId(confirmTarget._id);
     try {
-      await api.delete(`/events/${event._id}`);
+      await api.delete(`/events/${confirmTarget._id}`);
       fetchMine();
     } finally {
       setDeletingId(null);
+      setConfirmTarget(null);
     }
   };
 
@@ -62,7 +67,7 @@ export default function MyEventsPage() {
             <span className="font-mono text-[11.5px] tracking-[0.22em] uppercase">Campus<span className="text-textMuted">connect</span></span>
           </div>
           <nav className="flex items-center gap-7">
-            <Link to="/feed" className="font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text">Feed</Link>
+            <Link to="/" className="font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text">Feed</Link>
             <a href="#my-events" className="font-mono text-[11px] tracking-wider uppercase text-text border-b-2 border-accent pb-1">My events</a>
           </nav>
         </div>
@@ -143,6 +148,17 @@ export default function MyEventsPage() {
           </div>
         </section>
       )}
+
+      <ConfirmModal
+        open={!!confirmTarget}
+        title="Delete this event?"
+        message={confirmTarget ? `"${confirmTarget.title}" will be removed for everyone, including anyone already registered. This cannot be undone.` : ''}
+        confirmLabel="Delete event"
+        cancelLabel="Keep it"
+        confirming={deletingId === confirmTarget?._id}
+        onConfirm={confirmDelete}
+        onCancel={() => setConfirmTarget(null)}
+      />
     </div>
   );
 }
