@@ -65,18 +65,18 @@ export default function MyEventsPage() {
 
   return (
     <div className="min-h-screen bg-bg text-text font-body">
-      <header className="sticky top-0 z-20 flex items-center justify-between gap-8 px-16 py-5 border-b border-borderMuted bg-bg/92 backdrop-blur-md">
-        <div className="flex items-center gap-10">
+      <header className="sticky top-0 z-20 flex flex-col lg:flex-row lg:items-center justify-between gap-5 px-5 sm:px-8 lg:px-16 py-5 border-b border-borderMuted bg-bg/92 backdrop-blur-md">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-5 lg:gap-10 w-full lg:w-auto">
           <div className="flex items-center gap-3">
             <Aperture size={26} speed="9s" />
             <span className="font-mono text-[11.5px] tracking-[0.22em] uppercase">Campus<span className="text-textMuted">connect</span></span>
           </div>
-          <nav className="flex items-center gap-7">
+          <nav className="flex flex-wrap items-center gap-4 lg:gap-7">
             <Link to="/" className="font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text">Feed</Link>
             <a href="#my-events" className="font-mono text-[11px] tracking-wider uppercase text-text border-b-2 border-accent pb-1">My events</a>
           </nav>
         </div>
-        <div className="flex items-center gap-4.5">
+        <div className="flex flex-wrap items-center gap-3 lg:gap-4.5 w-full lg:w-auto justify-between lg:justify-end">
           <span className="font-mono text-[10px] tracking-wider uppercase text-textMuted border border-border px-2.5 py-1.5">Club leader · {user?.status}</span>
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-accent flex items-center justify-center font-heading font-extrabold text-[12.5px] text-bg">{user?.name?.slice(0, 2).toUpperCase()}</div>
@@ -92,11 +92,11 @@ export default function MyEventsPage() {
         </div>
       </header>
 
-      <section className="px-16 pt-13 pb-9 border-b-2 border-borderMuted">
+      <section className="px-5 sm:px-8 lg:px-16 pt-10 lg:pt-13 pb-9 border-b-2 border-borderMuted">
         <div className="flex items-end justify-between gap-12 flex-wrap">
           <div>
             <div className="font-mono text-[11px] tracking-[0.24em] uppercase text-accent mb-5.5">Leader workspace</div>
-            <h1 className="font-heading font-black text-6xl leading-[0.94] tracking-tight">What you&apos;re running.</h1>
+            <h1 className="font-heading font-black text-4xl sm:text-6xl leading-[0.98] sm:leading-[0.94] tracking-tight">What you&apos;re running.</h1>
             <p className="mt-5 text-base leading-relaxed text-textMuted max-w-[52ch]">Every event your club has published, newest first.</p>
           </div>
           <Link to="/events/new" className="flex-none h-14 flex items-center gap-3.5 px-5.5 bg-accent font-heading font-bold text-[15.5px] text-bg">
@@ -105,7 +105,7 @@ export default function MyEventsPage() {
         </div>
 
         {events.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-4 mt-11 border-t-2 border-borderMuted">
+          <div className="grid grid-cols-2 md:grid-cols-4 mt-9 lg:mt-11 border-t-2 border-borderMuted">
             <Stat value={events.length} label="Events created" />
             <Stat value={totalRegistrants} label="Total registrants" />
             <Stat value={thisWeek} label="Happening this week" accent />
@@ -115,8 +115,8 @@ export default function MyEventsPage() {
       </section>
 
       {loading ? null : events.length === 0 ? (
-        <section className="px-16 py-16">
-          <div className="flex items-center gap-16 p-16 bg-surface border border-border flex-wrap">
+        <section className="px-5 sm:px-8 lg:px-16 py-12 lg:py-16">
+          <div className="flex items-center gap-8 lg:gap-16 p-6 sm:p-10 lg:p-16 bg-surface border border-border flex-wrap">
             <div className="relative w-[148px] h-[148px] flex-none">
               <div className="absolute inset-0 rounded-full border-2 border-[#1C1C22]" />
               <div className="absolute inset-0 rounded-full border-2 border-transparent" style={{ borderTopColor: '#E91E8C', animation: 'cc-spin 16s linear infinite' }} />
@@ -135,7 +135,7 @@ export default function MyEventsPage() {
           </div>
         </section>
       ) : (
-        <section className="px-16 pt-8 pb-22">
+        <section className="px-5 sm:px-8 lg:px-16 pt-8 pb-22">
           <div className="flex items-baseline justify-between gap-6 mb-5">
             <div className="font-mono text-[11px] tracking-wider uppercase text-textMuted">
               {filter === 'All' ? `All ${events.length} events · newest first` : `Showing ${filtered.length} ${filter.toLowerCase()}`}
@@ -177,8 +177,8 @@ export default function MyEventsPage() {
 
 function Stat({ value, label, accent }) {
   return (
-    <div className="pt-5.5 pr-7 border-l border-borderMuted first:border-l-0 first:pl-0">
-      <div className="font-heading font-extrabold text-[42px] leading-none tracking-tight" style={{ color: accent ? '#E91E8C' : '#F4F4F5' }}>{value}</div>
+    <div className="pt-5.5 pr-4 lg:pr-7 border-l border-borderMuted first:border-l-0 first:pl-0">
+      <div className="font-heading font-extrabold text-[30px] sm:text-[42px] leading-none tracking-tight" style={{ color: accent ? '#E91E8C' : '#F4F4F5' }}>{value}</div>
       <div className="font-mono text-[10px] tracking-wider uppercase text-textMuted mt-2.5">{label}</div>
     </div>
   );

@@ -8,6 +8,7 @@ import api from '../services/api';
 
 const CATEGORIES = ['All', 'Academic', 'Social', 'Sports', 'Tech', 'Arts', 'Volunteering', 'Other'];
 const TYPES = ['All', 'workshop', 'social', 'competition', 'volunteering', 'other'];
+const IMAGE_BASE = '/images/New%20folder';
 
 export default function EventFeedPage() {
   const { user, logout } = useAuth();
@@ -82,15 +83,15 @@ export default function EventFeedPage() {
 
   return (
     <div className="min-h-screen bg-bg text-text font-body">
-      <header className="sticky top-0 z-20 flex items-center justify-between gap-8 px-16 py-5 border-b border-borderMuted bg-bg/92 backdrop-blur-md">
-        <div className="flex items-center gap-10">
+      <header className="sticky top-0 z-20 flex flex-col lg:flex-row lg:items-center justify-between gap-5 px-5 sm:px-8 lg:px-16 py-5 border-b border-borderMuted bg-bg/92 backdrop-blur-md">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-5 lg:gap-10 w-full lg:w-auto">
           <div className="flex items-center gap-3">
             <Aperture size={26} speed="9s" />
             <span className="font-mono text-[11.5px] tracking-[0.22em] uppercase">
               Campus<span className="text-textMuted">connect</span>
             </span>
           </div>
-          <nav className="flex items-center gap-7">
+          <nav className="flex flex-wrap items-center gap-4 lg:gap-7">
             <a href="#feed" className="font-mono text-[11px] tracking-wider uppercase text-text border-b-2 border-accent pb-1">Feed</a>
             {user?.role === 'student' && <Link to="/my-registrations" className="font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text">My RSVPs</Link>}
             {user?.role === 'clubLeader' && (
@@ -101,7 +102,7 @@ export default function EventFeedPage() {
             )}
           </nav>
         </div>
-        <div className="flex items-center gap-4.5">
+        <div className="flex flex-wrap items-center gap-3 lg:gap-4.5 w-full lg:w-auto justify-between lg:justify-end">
           {user?.role === 'clubLeader' && (
             <span className="font-mono text-[10px] tracking-wider uppercase text-textMuted border border-border px-2.5 py-1.5">
               Club leader · {user.status}
@@ -131,13 +132,18 @@ export default function EventFeedPage() {
         </div>
       </header>
 
-      <section className="relative px-16 pt-16 pb-11 overflow-hidden border-b-2 border-borderMuted">
+      <section
+        className="relative px-5 sm:px-8 lg:px-16 pt-11 sm:pt-16 pb-9 sm:pb-11 overflow-hidden border-b-2 border-borderMuted bg-cover bg-center"
+        style={{
+          backgroundImage: `linear-gradient(90deg, rgba(11,11,13,0.98) 0%, rgba(11,11,13,0.88) 42%, rgba(11,11,13,0.54) 100%), linear-gradient(0deg, rgba(11,11,13,0.92), rgba(11,11,13,0.18)), url('${IMAGE_BASE}/feed-hero.jpg')`
+        }}
+      >
         <div className="relative flex items-end justify-between gap-16 flex-wrap">
           <div className="max-w-[720px]">
             <div className="font-mono text-[11px] tracking-[0.24em] uppercase text-accent mb-6">
               {new Date().toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
             </div>
-            <h1 className="font-heading font-black text-6xl md:text-7xl leading-[0.9] tracking-tight">
+            <h1 className="font-heading font-black text-4xl sm:text-6xl md:text-7xl leading-[0.95] sm:leading-[0.9] tracking-tight">
               Find something<br />to do before<br /><span className="text-accent">Friday.</span>
             </h1>
             <p className="mt-7 text-[16.5px] leading-relaxed text-textMuted max-w-[48ch]">
@@ -148,7 +154,7 @@ export default function EventFeedPage() {
         </div>
       </section>
 
-      <section className="sticky top-[73px] z-[15] px-16 py-7 border-b border-borderMuted bg-bg/94 backdrop-blur-md">
+      <section className="lg:sticky lg:top-[73px] z-[15] px-5 sm:px-8 lg:px-16 py-6 lg:py-7 border-b border-borderMuted bg-bg/94 backdrop-blur-md">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_330px] gap-11 items-start">
           <div className="flex flex-col gap-4.5">
             <FilterRow label="Category" options={CATEGORIES} active={category} onChange={setCategory} />
@@ -170,7 +176,7 @@ export default function EventFeedPage() {
         </div>
       </section>
 
-      <section className="px-16 pt-8 pb-22">
+      <section className="px-5 sm:px-8 lg:px-16 pt-8 pb-22">
         <div className="flex items-baseline justify-between gap-6 mb-5">
           <div className="font-mono text-[11px] tracking-wider uppercase text-textMuted">
             {loading ? 'Loading…' : `Showing ${events.length} event${events.length === 1 ? '' : 's'}`}
@@ -203,7 +209,7 @@ export default function EventFeedPage() {
         )}
 
         {!loading && events.length === 0 && (
-          <div className="flex items-center gap-14 p-18 bg-surface border border-border flex-wrap">
+          <div className="flex items-center gap-8 lg:gap-14 p-6 sm:p-10 lg:p-18 bg-surface border border-border flex-wrap">
             <div className="relative w-[132px] h-[132px] flex-none">
               <div className="absolute inset-0 rounded-full border-2 border-[#1C1C22]" />
               <div className="absolute inset-0 rounded-full border-2 border-transparent" style={{ borderTopColor: '#E91E8C', animation: 'cc-spin 14s linear infinite' }} />
@@ -243,7 +249,7 @@ export default function EventFeedPage() {
 
 function FilterRow({ label, options, active, onChange }) {
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
       <span className="font-mono text-[10px] tracking-wider uppercase text-[#4A4A54] w-16 flex-none">{label}</span>
       <div className="flex flex-wrap gap-2">
         {options.map((opt) => (

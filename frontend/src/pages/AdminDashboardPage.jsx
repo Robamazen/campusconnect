@@ -6,6 +6,7 @@ import api from '../services/api';
 
 const ROLES = ['All', 'student', 'clubLeader', 'admin'];
 const STATUSES = ['All', 'pending', 'approved', 'rejected'];
+const IMAGE_BASE = '/images/New%20folder';
 
 function initialsOf(name) {
   return (name || '?').split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase();
@@ -127,19 +128,19 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="min-h-screen bg-bg text-text font-body">
-      <header className="sticky top-0 z-20 flex items-center justify-between gap-8 px-16 py-5 border-b border-borderMuted bg-bg/92 backdrop-blur-md">
-        <div className="flex items-center gap-10">
+      <header className="sticky top-0 z-20 flex flex-col lg:flex-row lg:items-center justify-between gap-5 px-5 sm:px-8 lg:px-16 py-5 border-b border-borderMuted bg-bg/92 backdrop-blur-md">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-5 lg:gap-10 w-full lg:w-auto">
           <div className="flex items-center gap-3">
             <Aperture size={26} speed="9s" />
             <span className="font-mono text-[11.5px] tracking-[0.22em] uppercase">Campus<span className="text-textMuted">connect</span></span>
           </div>
-          <nav className="flex items-center gap-7">
+          <nav className="flex flex-wrap items-center gap-4 lg:gap-7">
             <Link to="/" className="font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text">Feed</Link>
             <a href="#users" className="font-mono text-[11px] tracking-wider uppercase text-text border-b-2 border-accent pb-1">Users</a>
             <a href="#events" className="font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text">Events</a>
           </nav>
         </div>
-        <div className="flex items-center gap-4.5">
+        <div className="flex flex-wrap items-center gap-3 lg:gap-4.5 w-full lg:w-auto justify-between lg:justify-end">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-accent flex items-center justify-center font-heading font-extrabold text-[12.5px] text-bg">
               {initialsOf(user?.name)}
@@ -156,18 +157,23 @@ export default function AdminDashboardPage() {
         </div>
       </header>
 
-      <section className="px-16 pt-13 pb-9 border-b-2 border-borderMuted">
+      <section
+        className="px-5 sm:px-8 lg:px-16 pt-10 lg:pt-13 pb-9 border-b-2 border-borderMuted bg-cover bg-center"
+        style={{
+          backgroundImage: `linear-gradient(90deg, rgba(11,11,13,0.98) 0%, rgba(11,11,13,0.9) 46%, rgba(11,11,13,0.62) 100%), linear-gradient(0deg, rgba(11,11,13,0.94), rgba(11,11,13,0.24)), url('${IMAGE_BASE}/admin-bg.jpg')`
+        }}
+      >
         <div className="font-mono text-[11px] tracking-[0.24em] uppercase text-accent mb-5.5">Admin workspace</div>
-        <h1 className="font-heading font-black text-6xl leading-[0.94] tracking-tight">Platform control.</h1>
+        <h1 className="font-heading font-black text-4xl sm:text-6xl leading-[0.98] sm:leading-[0.94] tracking-tight">Platform control.</h1>
         <p className="mt-5 text-base leading-relaxed text-textMuted max-w-[56ch]">
           Review club leader requests, change roles, and monitor event activity from one admin view.
         </p>
       </section>
 
-      <section id="users" className="px-16 pt-10 pb-9 border-b-2 border-borderMuted">
+      <section id="users" className="px-5 sm:px-8 lg:px-16 pt-10 pb-9 border-b-2 border-borderMuted">
         <div className="font-mono text-[11px] tracking-[0.24em] uppercase text-accent mb-4">Users</div>
         <h2 className="font-heading font-black text-4xl leading-tight tracking-tight">Account control.</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 mt-11 border-t-2 border-borderMuted">
+        <div className="grid grid-cols-2 md:grid-cols-4 mt-9 lg:mt-11 border-t-2 border-borderMuted">
           <Stat value={counts.total} label="Visible users" />
           <Stat value={counts.pending} label="Pending leaders" accent />
           <Stat value={counts.leaders} label="Club leaders" />
@@ -175,12 +181,12 @@ export default function AdminDashboardPage() {
         </div>
       </section>
 
-      <section className="px-16 py-6 border-b border-borderMuted flex items-end justify-between gap-8 flex-wrap">
+      <section className="px-5 sm:px-8 lg:px-16 py-6 border-b border-borderMuted flex items-end justify-between gap-6 lg:gap-8 flex-wrap">
         <div className="flex flex-col gap-4">
           <FilterRow label="Role" options={ROLES} active={role} onChange={setRole} />
           <FilterRow label="Status" options={STATUSES} active={status} onChange={setStatus} />
         </div>
-        <div className="relative w-[320px]">
+        <div className="relative w-full sm:w-[320px]">
           <label className="block font-mono text-[10px] tracking-wider uppercase text-[#4A4A54] mb-2.5">Search</label>
           <input
             type="text"
@@ -194,7 +200,7 @@ export default function AdminDashboardPage() {
       </section>
 
       {toast && (
-        <div className="px-16 pt-5">
+        <div className="px-5 sm:px-8 lg:px-16 pt-5">
           <div className={`font-mono text-xs px-4 py-3 border-l-2 bg-surface ${toast.type === 'success' ? 'border-accent text-text' : 'border-accentLight text-accentLight'}`}>
             {toast.text}
           </div>
@@ -202,36 +208,38 @@ export default function AdminDashboardPage() {
       )}
 
       {loading ? null : visibleUsers.length > 0 ? (
-        <section className="px-16 pb-16">
-          <div className="grid grid-cols-[1.4fr_2fr_132px_132px_260px] items-center gap-5 py-3.5 px-4 border-b-2 border-borderMuted">
-            {['User', 'Email', 'Role', 'Status', 'Actions'].map((h) => (
-              <span key={h} className={`font-mono text-[9.5px] tracking-wider uppercase text-textMuted ${h === 'Actions' ? 'text-right' : ''}`}>{h}</span>
+        <section className="px-5 sm:px-8 lg:px-16 pb-16 overflow-x-auto">
+          <div className="min-w-[860px]">
+            <div className="grid grid-cols-[1.4fr_2fr_132px_132px_260px] items-center gap-5 py-3.5 px-4 border-b-2 border-borderMuted">
+              {['User', 'Email', 'Role', 'Status', 'Actions'].map((h) => (
+                <span key={h} className={`font-mono text-[9.5px] tracking-wider uppercase text-textMuted ${h === 'Actions' ? 'text-right' : ''}`}>{h}</span>
+              ))}
+            </div>
+            {visibleUsers.map((account) => (
+              <UserRow
+                key={account._id}
+                account={account}
+                selfId={user?.id}
+                busy={busyId === account._id}
+                onStatus={updateStatus}
+                onRole={updateRole}
+              />
             ))}
           </div>
-          {visibleUsers.map((account) => (
-            <UserRow
-              key={account._id}
-              account={account}
-              selfId={user?.id}
-              busy={busyId === account._id}
-              onStatus={updateStatus}
-              onRole={updateRole}
-            />
-          ))}
         </section>
       ) : (
-        <section className="px-16 py-16">
-          <div className="p-11 border border-border">
+        <section className="px-5 sm:px-8 lg:px-16 py-12 lg:py-16">
+          <div className="p-6 sm:p-11 border border-border">
             <h2 className="font-heading font-extrabold text-2xl tracking-tight mb-2.5">No users in this view.</h2>
             <p className="text-[14.5px] leading-relaxed text-textMuted">Change the filters or search term to widen the list.</p>
           </div>
         </section>
       )}
 
-      <section id="events" className="px-16 pt-10 pb-9 border-y-2 border-borderMuted">
+      <section id="events" className="px-5 sm:px-8 lg:px-16 pt-10 pb-9 border-y-2 border-borderMuted">
         <div className="font-mono text-[11px] tracking-[0.24em] uppercase text-accent mb-4">Events</div>
         <h2 className="font-heading font-black text-4xl leading-tight tracking-tight">Event health.</h2>
-        <div className="grid grid-cols-2 md:grid-cols-6 mt-11 border-t-2 border-borderMuted">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 mt-9 lg:mt-11 border-t-2 border-borderMuted">
           <Stat value={eventStats.total} label="Total events" />
           <Stat value={eventStats.upcoming} label="Upcoming" accent />
           <Stat value={eventStats.closed} label="Closed or past" />
@@ -242,19 +250,21 @@ export default function AdminDashboardPage() {
       </section>
 
       {eventsLoading ? null : events.length > 0 ? (
-        <section className="px-16 pb-20">
-          <div className="grid grid-cols-[1.7fr_1.2fr_110px_130px_110px_96px] items-center gap-5 py-3.5 px-4 border-b-2 border-borderMuted">
-            {['Event', 'Club', 'Type', 'Date', 'Capacity', 'Status'].map((h) => (
-              <span key={h} className="font-mono text-[9.5px] tracking-wider uppercase text-textMuted">{h}</span>
+        <section className="px-5 sm:px-8 lg:px-16 pb-20 overflow-x-auto">
+          <div className="min-w-[860px]">
+            <div className="grid grid-cols-[1.7fr_1.2fr_110px_130px_110px_96px] items-center gap-5 py-3.5 px-4 border-b-2 border-borderMuted">
+              {['Event', 'Club', 'Type', 'Date', 'Capacity', 'Status'].map((h) => (
+                <span key={h} className="font-mono text-[9.5px] tracking-wider uppercase text-textMuted">{h}</span>
+              ))}
+            </div>
+            {events.map((event) => (
+              <EventRow key={event._id} event={event} />
             ))}
           </div>
-          {events.map((event) => (
-            <EventRow key={event._id} event={event} />
-          ))}
         </section>
       ) : (
-        <section className="px-16 py-16">
-          <div className="p-11 border border-border">
+        <section className="px-5 sm:px-8 lg:px-16 py-12 lg:py-16">
+          <div className="p-6 sm:p-11 border border-border">
             <h2 className="font-heading font-extrabold text-2xl tracking-tight mb-2.5">No events yet.</h2>
             <p className="text-[14.5px] leading-relaxed text-textMuted">Events created by approved club leaders will appear here.</p>
           </div>
@@ -307,7 +317,7 @@ function UserRow({ account, selfId, busy, onStatus, onRole }) {
 
 function FilterRow({ label, options, active, onChange }) {
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
       <span className="font-mono text-[10px] tracking-wider uppercase text-[#4A4A54] w-14 flex-none">{label}</span>
       <div className="flex flex-wrap gap-2">
         {options.map((opt) => (
@@ -370,8 +380,8 @@ function EventRow({ event }) {
 
 function Stat({ value, label, accent }) {
   return (
-    <div className="pt-5.5 pr-7 border-l border-borderMuted first:border-l-0 first:pl-0">
-      <div className="font-heading font-extrabold text-[42px] leading-none tracking-tight" style={{ color: accent ? '#E91E8C' : '#F4F4F5' }}>{value}</div>
+    <div className="pt-5.5 pr-4 lg:pr-7 border-l border-borderMuted first:border-l-0 first:pl-0">
+      <div className="font-heading font-extrabold text-[30px] sm:text-[42px] leading-none tracking-tight" style={{ color: accent ? '#E91E8C' : '#F4F4F5' }}>{value}</div>
       <div className="font-mono text-[10px] tracking-wider uppercase text-textMuted mt-2.5">{label}</div>
     </div>
   );

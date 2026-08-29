@@ -83,7 +83,7 @@ export default function EventRegistrantsPage() {
   if (loading) return <div className="min-h-screen bg-bg" />;
   if (!event) {
     return (
-      <div className="min-h-screen bg-bg text-text p-16">
+      <div className="min-h-screen bg-bg text-text p-5 sm:p-8 lg:p-16">
         <div className="flex items-center justify-between gap-6 mb-8">
           <Link to="/" className="font-mono text-[10.5px] tracking-wider uppercase text-textMuted">← Back to feed</Link>
           <button
@@ -118,7 +118,7 @@ export default function EventRegistrantsPage() {
 
   return (
     <div className="min-h-screen bg-bg text-text font-body">
-      <section className="relative px-16 pt-8 pb-6.5 border-b-2 border-borderMuted overflow-hidden">
+      <section className="relative px-5 sm:px-8 lg:px-16 pt-8 pb-6.5 border-b-2 border-borderMuted overflow-hidden">
         <div className="flex items-end justify-between gap-12 flex-wrap">
           <div className="min-w-0">
             <div className="flex items-center justify-between gap-6 mb-4">
@@ -141,8 +141,8 @@ export default function EventRegistrantsPage() {
             <p className="mt-3 text-[14.5px] text-textMuted">{event.title}</p>
           </div>
 
-          <div className="flex-none flex items-center gap-6.5">
-            <div className="flex items-center gap-4 pr-6.5 border-r border-borderMuted">
+          <div className="flex-none flex flex-col sm:flex-row sm:items-center gap-5 lg:gap-6.5 w-full lg:w-auto">
+            <div className="flex items-center gap-4 sm:pr-6.5 sm:border-r border-borderMuted">
               <div className="relative w-16 h-16 flex-none">
                 <svg viewBox="0 0 64 64" width="64" height="64" style={{ transform: 'rotate(-90deg)' }}>
                   <circle cx="32" cy="32" r="29" fill="none" stroke="#26262E" strokeWidth="3" />
@@ -169,9 +169,9 @@ export default function EventRegistrantsPage() {
         </div>
       </section>
 
-      {error && <div className="px-16 pt-5 font-mono text-xs text-accentLight">{error}</div>}
+      {error && <div className="px-5 sm:px-8 lg:px-16 pt-5 font-mono text-xs text-accentLight">{error}</div>}
 
-      <section className="px-16 py-5.5 border-b border-borderMuted flex items-center justify-between gap-8 flex-wrap">
+      <section className="px-5 sm:px-8 lg:px-16 py-5.5 border-b border-borderMuted flex items-center justify-between gap-5 lg:gap-8 flex-wrap">
         <div className="flex">
           {['All', 'Pending', 'Confirmed', 'Cancelled'].map((t) => (
             <button
@@ -192,7 +192,7 @@ export default function EventRegistrantsPage() {
               <span>Confirm all pending</span><span className="font-mono text-[10px] text-textMuted">{counts.Pending}</span>
             </button>
           )}
-          <div className="relative w-[280px]">
+          <div className="relative w-full sm:w-[280px]">
             <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Name or email" className="w-full h-10 pl-3.5 pr-9 bg-surface border border-border text-text text-[13.5px]" />
             <span className="absolute right-3.5 top-2.5 font-mono text-xs text-textFaint">⌕</span>
           </div>
@@ -200,16 +200,17 @@ export default function EventRegistrantsPage() {
       </section>
 
       {filtered.length > 0 ? (
-        <section className="px-16 pb-20">
-          <div className="grid grid-cols-[30px_1.45fr_2.15fr_132px_126px_152px] items-center gap-5 py-3.5 px-4 border-b-2 border-borderMuted">
-            {['#', 'Student', 'Email', 'Status', 'Registered', 'Actions'].map((h) => (
-              <span key={h} className={`font-mono text-[9.5px] tracking-wider uppercase text-textMuted ${h === 'Actions' ? 'text-right' : ''}`}>{h}</span>
-            ))}
-          </div>
-          {filtered.map((r, i) => {
-            const t = TONE[r.status];
-            return (
-              <div key={r._id} className="cc-row grid grid-cols-[30px_1.45fr_2.15fr_132px_126px_152px] items-center gap-5 py-3.5 px-4 border-b border-[#1C1C22]">
+        <section className="px-5 sm:px-8 lg:px-16 pb-20 overflow-x-auto">
+          <div className="min-w-[920px]">
+            <div className="grid grid-cols-[30px_1.45fr_2.15fr_132px_126px_152px] items-center gap-5 py-3.5 px-4 border-b-2 border-borderMuted">
+              {['#', 'Student', 'Email', 'Status', 'Registered', 'Actions'].map((h) => (
+                <span key={h} className={`font-mono text-[9.5px] tracking-wider uppercase text-textMuted ${h === 'Actions' ? 'text-right' : ''}`}>{h}</span>
+              ))}
+            </div>
+            {filtered.map((r, i) => {
+              const t = TONE[r.status];
+              return (
+                <div key={r._id} className="cc-row grid grid-cols-[30px_1.45fr_2.15fr_132px_126px_152px] items-center gap-5 py-3.5 px-4 border-b border-[#1C1C22]">
                 <span className="font-mono text-[11px] text-textMuted">{String(i + 1).padStart(2, '0')}</span>
                 <div className="flex items-center gap-3 min-w-0">
                   <span className="w-[30px] h-[30px] flex-none flex items-center justify-center bg-surface border border-border font-heading font-extrabold text-[11px] text-accent">{initialsOf(r.user?.name)}</span>
@@ -231,9 +232,10 @@ export default function EventRegistrantsPage() {
                   {r.status === 'confirmed' && <ActionBtn label="Cancel" onClick={() => setStatus(r._id, 'cancelled')} busy={busyId === r._id} />}
                   {r.status === 'cancelled' && <ActionBtn label="Reinstate" onClick={() => setStatus(r._id, 'confirmed')} busy={busyId === r._id} />}
                 </div>
-              </div>
-            );
-          })}
+                </div>
+              );
+            })}
+          </div>
           <div className="flex items-center justify-between gap-6 pt-4.5 px-4">
             <span className="font-mono text-[10.5px] tracking-wider uppercase text-textMuted">
               {tab === 'All' ? `All ${rows.length} registrants` : `Showing ${filtered.length} ${tab.toLowerCase()}`}
@@ -242,8 +244,8 @@ export default function EventRegistrantsPage() {
           </div>
         </section>
       ) : (
-        <section className="px-16 py-16">
-          <div className="flex items-center gap-9 p-11 border border-border">
+        <section className="px-5 sm:px-8 lg:px-16 py-12 lg:py-16">
+          <div className="flex items-center gap-6 lg:gap-9 p-6 sm:p-11 border border-border flex-wrap">
             <div className="w-18 h-18 rounded-full border-2 border-[#1C1C22] flex-none" style={{ width: 72, height: 72 }} />
             <div>
               <h2 className="font-heading font-extrabold text-2xl tracking-tight mb-2.5">Nobody in this view.</h2>
