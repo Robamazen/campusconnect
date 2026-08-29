@@ -14,6 +14,15 @@ MongoDB · Express.js · React · Node.js (MERN)
 
 ## Setup
 
-1. `npm install`
-2. Create a `.env` file with `MONGO_URI` and `JWT_SECRET`
+### Backend
+
+1. `cd backend`
+2. `npm install`
+3. Create a `.env` file with `MONGO_URI` and `JWT_SECRET`
+4. `npm run dev`
+
+### Frontend
+
+1. `cd frontend`
+2. `npm install`
 3. `npm run dev`
