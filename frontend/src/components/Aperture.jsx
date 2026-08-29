@@ -1,5 +1,5 @@
 export default function Aperture({ size = 30, speed = '9s', filled = true }) {
-  const ringThickness = size >= 60 ? 2 : 2;
+  const ringThickness = size >= 60 ? 3 : 2;
   return (
     <div style={{ position: 'relative', width: size, height: size, flexShrink: 0 }}>
       <div

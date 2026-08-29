@@ -3,6 +3,9 @@ export function downloadEventICS(event) {
   const end = new Date(start.getTime() + 2 * 60 * 60 * 1000); // default 2hr block if no end time stored
 
   const fmt = (d) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  // RFC 5545 3.3.11: backslash, comma, and semicolon are also structural
+  // characters in text values and must be escaped, not just newlines.
+  const escapeText = (s) => s.replace(/\\/g, '\\\\').replace(/[,;]/g, '\\$&').replace(/\n/g, '\\n');
 
   const ics = [
     'BEGIN:VCALENDAR',
@@ -12,9 +15,9 @@ export function downloadEventICS(event) {
     `DTSTAMP:${fmt(new Date())}`,
     `DTSTART:${fmt(start)}`,
     `DTEND:${fmt(end)}`,
-    `SUMMARY:${event.title}`,
-    `LOCATION:${event.location}`,
-    `DESCRIPTION:${event.description.replace(/\n/g, '\\n')}`,
+    `SUMMARY:${escapeText(event.title)}`,
+    `LOCATION:${escapeText(event.location)}`,
+    `DESCRIPTION:${escapeText(event.description || '')}`,
     'END:VEVENT',
     'END:VCALENDAR'
   ].join('\r\n');

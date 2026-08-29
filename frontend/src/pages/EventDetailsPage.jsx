@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Aperture from '../components/Aperture';
 import RsvpModal from '../components/RsvpModal';
+import ConfirmModal from '../components/ConfirmModal';
 import api from '../services/api';
 import { downloadEventICS } from '../utils/ics';
 
@@ -26,6 +27,7 @@ export default function EventDetailsPage() {
   const [acting, setActing] = useState(false);
   const [toast, setToast] = useState(null);
   const [modal, setModal] = useState({ open: false, variant: 'success', event: null, registration: null, error: null });
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
 
   const fetchEvent = useCallback(async () => {
@@ -78,8 +80,9 @@ export default function EventDetailsPage() {
     }
   };
 
-  const handleDelete = async () => {
-    if (!window.confirm('Delete this event? This cannot be undone.')) return;
+  const handleDelete = () => setShowDeleteConfirm(true);
+
+  const confirmDelete = async () => {
     setActing(true);
     try {
       await api.delete(`/events/${event._id}`);
@@ -88,6 +91,7 @@ export default function EventDetailsPage() {
       setToast({ type: 'error', text: e.response?.data?.message || 'Delete failed.' });
     } finally {
       setActing(false);
+      setShowDeleteConfirm(false);
     }
   };
 
@@ -207,6 +211,17 @@ export default function EventDetailsPage() {
         registration={modal.registration}
         errorMessage={modal.error}
         onClose={() => setModal({ ...modal, open: false })}
+      />
+
+      <ConfirmModal
+        open={showDeleteConfirm}
+        title="Delete this event?"
+        message="This removes it for everyone, including anyone already registered. This cannot be undone."
+        confirmLabel="Delete event"
+        cancelLabel="Keep it"
+        confirming={acting}
+        onConfirm={confirmDelete}
+        onCancel={() => setShowDeleteConfirm(false)}
       />
     </div>
   );

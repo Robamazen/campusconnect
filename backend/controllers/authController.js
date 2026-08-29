@@ -111,7 +111,10 @@ const login = async (req, res, next) => {
 // @access Private
 const getMe = async (req, res, next) => {
     try {
-        res.status(200).json({success: true, user: req.user});
+        // Same shape as login/register (`id`, not Mongo's `_id`) so the frontend
+        // doesn't get a different user object after a page refresh vs. a fresh login.
+        const { _id, name, email, role, status } = req.user;
+        res.status(200).json({success: true, user: { id: _id, name, email, role, status }});
     } catch (err) {
         next(err);
     }
