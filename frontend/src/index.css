@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    background: #0B0B0D;
+}
+
+::selection {
+    background: #E91E8C;
+    color: #fff;
+}
+
+input::placeholder {
+    color: #5B5B66;
+}
+
+@keyframes cc-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
