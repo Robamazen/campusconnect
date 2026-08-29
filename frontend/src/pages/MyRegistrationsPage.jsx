@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Aperture from '../components/Aperture';
+import ConfirmModal from '../components/ConfirmModal';
 import api from '../services/api';
 import { downloadEventICS } from '../utils/ics';
 
@@ -18,6 +19,7 @@ export default function MyRegistrationsPage() {
   const [filter, setFilter] = useState('All');
   const [cancellingId, setCancellingId] = useState(null);
   const [toast, setToast] = useState(null);
+  const [confirmTarget, setConfirmTarget] = useState(null); // registration pending cancel confirmation
 
   const handleLogout = () => {
     logout();
@@ -38,17 +40,19 @@ export default function MyRegistrationsPage() {
 
   useEffect(() => { fetchMine(); }, [fetchMine]);
 
-  const handleCancel = async (registration) => {
-    const label = registration.event?.title || 'this registration';
-    if (!window.confirm(`Cancel your RSVP for "${label}"?`)) return;
-    setCancellingId(registration._id);
+  const handleCancel = (registration) => setConfirmTarget(registration);
+
+  const confirmCancel = async () => {
+    if (!confirmTarget) return;
+    setCancellingId(confirmTarget._id);
     try {
-      await api.delete(`/registrations/${registration._id}`);
+      await api.delete(`/registrations/${confirmTarget._id}`);
       fetchMine();
     } catch (e) {
       setToast({ type: 'error', text: e.response?.data?.message || 'Could not cancel this registration.' });
     } finally {
       setCancellingId(null);
+      setConfirmTarget(null);
     }
   };
 
@@ -153,6 +157,21 @@ export default function MyRegistrationsPage() {
           </div>
         </section>
       )}
+
+      <ConfirmModal
+        open={!!confirmTarget}
+        title="Cancel this RSVP?"
+        message={
+          confirmTarget?.event
+            ? `You'll give up your spot for "${confirmTarget.event.title}". You can RSVP again later if space is still open.`
+            : 'This removes the record from your registrations.'
+        }
+        confirmLabel="Cancel RSVP"
+        cancelLabel="Keep my spot"
+        confirming={cancellingId === confirmTarget?._id}
+        onConfirm={confirmCancel}
+        onCancel={() => setConfirmTarget(null)}
+      />
     </div>
   );
 }
