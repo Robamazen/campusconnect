@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const ACCENT_CATEGORIES = ['Academic', 'Tech'];
 const CIRCUMFERENCE = 100.53; // 2πr for r=16
 
@@ -55,36 +57,38 @@ export default function EventCard({ event, onRsvp, rsvping }) {
     <article className="cc-card group relative flex flex-col h-full min-h-[288px] bg-surface border border-border px-5 pt-5 overflow-hidden transition-colors">
       {status !== 'open' && <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#3A3A45]" />}
 
-      <div className="flex items-center justify-between gap-3 mb-[18px]">
-        <span
-          className="font-mono text-[10px] tracking-[0.18em] uppercase px-[9px] py-[5px] border"
-          style={{
-            background: isAccentTag ? '#E91E8C' : 'transparent',
-            color: isAccentTag ? '#0B0B0D' : '#8E8E99',
-            borderColor: isAccentTag ? '#E91E8C' : '#3A3A45'
-          }}
-        >
-          {event.category}
-        </span>
-        <span className="font-mono text-[10px] tracking-wider uppercase text-textFaint">{event.type}</span>
-      </div>
+      <Link to={`/events/${event._id}`} className="flex flex-col flex-1 min-h-0">
+        <div className="flex items-center justify-between gap-3 mb-[18px]">
+          <span
+            className="font-mono text-[10px] tracking-[0.18em] uppercase px-[9px] py-[5px] border"
+            style={{
+              background: isAccentTag ? '#E91E8C' : 'transparent',
+              color: isAccentTag ? '#0B0B0D' : '#8E8E99',
+              borderColor: isAccentTag ? '#E91E8C' : '#3A3A45'
+            }}
+          >
+            {event.category}
+          </span>
+          <span className="font-mono text-[10px] tracking-wider uppercase text-textFaint">{event.type}</span>
+        </div>
 
-      <h3 className="cc-title mb-3 font-heading font-extrabold text-xl leading-tight tracking-tight transition-colors"
-        style={{ color: status === 'open' ? '#F4F4F5' : '#8E8E99' }}>
-        {event.title}
-      </h3>
+        <h3 className="cc-title mb-3 font-heading font-extrabold text-xl leading-tight tracking-tight transition-colors"
+          style={{ color: status === 'open' ? '#F4F4F5' : '#8E8E99' }}>
+          {event.title}
+        </h3>
 
-      <div className="flex items-center gap-2 mb-5">
-        <span className="w-[5px] h-[5px] rounded-full bg-accent flex-none" />
-        <span className="text-[13.5px] font-medium text-textMuted">{event.club}</span>
-      </div>
+        <div className="flex items-center gap-2 mb-5">
+          <span className="w-[5px] h-[5px] rounded-full bg-accent flex-none" />
+          <span className="text-[13.5px] font-medium text-textMuted">{event.club}</span>
+        </div>
 
-      <div className="grid grid-cols-[auto_1fr] gap-x-3.5 gap-y-1.5 mt-auto pb-5">
-        <span className="font-mono text-[10px] tracking-wider uppercase text-[#4A4A54] pt-0.5">When</span>
-        <span className="text-[13px] text-[#C9C9D1]">{formatWhen(event.eventDate)}</span>
-        <span className="font-mono text-[10px] tracking-wider uppercase text-[#4A4A54] pt-0.5">Where</span>
-        <span className="text-[13px] text-[#C9C9D1]">{event.location}</span>
-      </div>
+        <div className="grid grid-cols-[auto_1fr] gap-x-3.5 gap-y-1.5 mt-auto pb-5">
+          <span className="font-mono text-[10px] tracking-wider uppercase text-[#4A4A54] pt-0.5">When</span>
+          <span className="text-[13px] text-[#C9C9D1]">{formatWhen(event.eventDate)}</span>
+          <span className="font-mono text-[10px] tracking-wider uppercase text-[#4A4A54] pt-0.5">Where</span>
+          <span className="text-[13px] text-[#C9C9D1]">{event.location}</span>
+        </div>
+      </Link>
 
       <div className="flex items-center gap-3.5 -mx-5 px-5 py-4 border-t border-borderMuted">
         <div className="relative w-[38px] h-[38px] flex-none">
@@ -108,7 +112,7 @@ export default function EventCard({ event, onRsvp, rsvping }) {
         <button
           type="button"
           disabled={cta.disabled || rsvping}
-          onClick={() => onRsvp?.(event)}
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); onRsvp?.(event); }}
           className="cc-cta h-[38px] flex items-center gap-2 px-3.5 border font-heading font-bold text-[12.5px] disabled:cursor-not-allowed"
           style={{ background: cta.bg, borderColor: cta.border, color: cta.color }}
         >

@@ -8,9 +8,11 @@ const {
   cancelRegistration
 } = require('../controllers/registrationController');
 const { protect } = require('../middleware/authMiddleware');
+const { authorize } = require('../middleware/roleMiddleware');
+
 
 // All registration routes require login
-router.post('/', protect, createRegistration);
+router.post('/', protect, authorize('student'), createRegistration);
 router.get('/my', protect, getMyRegistrations);
 router.get('/event/:id', protect, getEventRegistrants); // ownership checked in controller
 router.put('/:id', protect, updateRegistrationStatus);   // ownership checked in controller

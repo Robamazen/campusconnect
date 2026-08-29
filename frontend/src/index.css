@@ -49,3 +49,50 @@ input::placeholder {
         transform: rotate(360deg);
     }
 }
+
+@keyframes cc-modal-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cc-scrim-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes cc-ring-draw {
+    from {
+        stroke-dashoffset: 301.6;
+    }
+
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes cc-tick-draw {
+    from {
+        stroke-dashoffset: 40;
+    }
+
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.cc-close:hover {
+    color: #F4F4F5 !important;
+    border-color: #3A3A45 !important;
+}
