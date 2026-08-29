@@ -18,6 +18,32 @@ input::placeholder {
     color: #5B5B66;
 }
 
+.cc-card:hover {
+    border-color: #E91E8C;
+    background: #17171E;
+}
+
+.cc-card:hover .cc-title {
+    color: #FF5FB2;
+}
+
+.cc-card:hover .cc-arrow {
+    transform: translateX(4px);
+}
+
+.cc-cta:not(:disabled):hover {
+    background: #FF3D9E;
+}
+
+.cc-cta:not(:disabled):active {
+    background: #C2166F;
+}
+
+.cc-chip:hover {
+    border-color: #E91E8C;
+    color: #F4F4F5;
+}
+
 @keyframes cc-spin {
     to {
         transform: rotate(360deg);
