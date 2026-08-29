@@ -7,7 +7,12 @@ const { errorHandler, notFound } = require('./middleware/errorHandler');
 connectDB();
 
 const app = express();
-app.use(cors());
+
+const allowedOrigins = (process.env.CLIENT_ORIGIN || 'http://localhost:5173').split(',');
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
 app.use(express.json());
 
 app.get('/', (req, res) => {
