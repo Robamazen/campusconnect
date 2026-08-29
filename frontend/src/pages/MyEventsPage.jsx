@@ -7,7 +7,7 @@ import ConfirmModal from '../components/ConfirmModal';
 import api from '../services/api';
 
 export default function MyEventsPage() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,6 +29,11 @@ export default function MyEventsPage() {
 
   const handleEdit = (event, target) => {
     navigate(target === 'registrants' ? `/events/${event._id}/registrants` : `/events/${event._id}/edit`);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
   };
 
   const handleDelete = (event) => setConfirmTarget(event);
@@ -77,6 +82,13 @@ export default function MyEventsPage() {
             <div className="w-8 h-8 bg-accent flex items-center justify-center font-heading font-extrabold text-[12.5px] text-bg">{user?.name?.slice(0, 2).toUpperCase()}</div>
             <span className="text-[13.5px] font-medium">{user?.name}</span>
           </div>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text border border-border px-3 py-2 transition-colors"
+          >
+            Log out
+          </button>
         </div>
       </header>
 

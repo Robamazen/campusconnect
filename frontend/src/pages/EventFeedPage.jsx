@@ -50,6 +50,14 @@ export default function EventFeedPage() {
   }, [fetchEvents, search]);
 
   const handleRsvp = async (event) => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    if (user.role !== 'student') {
+      setToast({ type: 'error', text: 'Only student accounts can RSVP to events.' });
+      return;
+    }
     setRsvpingId(event._id); // or setActing(true) on Event Details
     try {
       const res = await api.post('/registrations', { eventId: event._id });
@@ -69,6 +77,8 @@ export default function EventFeedPage() {
   };
 
   const hasFilters = category !== 'All' || type !== 'All' || search.trim().length > 0;
+  const canRsvp = user?.role === 'student';
+  const rsvpLabel = !user ? 'Log in' : !canRsvp ? 'Students only' : undefined;
 
   return (
     <div className="min-h-screen bg-bg text-text font-body">
@@ -82,7 +92,7 @@ export default function EventFeedPage() {
           </div>
           <nav className="flex items-center gap-7">
             <a href="#feed" className="font-mono text-[11px] tracking-wider uppercase text-text border-b-2 border-accent pb-1">Feed</a>
-            <Link to="/my-registrations" className="font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text">My RSVPs</Link>
+            {user?.role === 'student' && <Link to="/my-registrations" className="font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text">My RSVPs</Link>}
             {user?.role === 'clubLeader' && (
               <Link to="/my-events" className="font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text">My Events</Link>
             )}
@@ -97,19 +107,27 @@ export default function EventFeedPage() {
               Club leader · {user.status}
             </span>
           )}
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-accent flex items-center justify-center font-heading font-extrabold text-[12.5px] text-bg">
-              {user?.name?.slice(0, 2).toUpperCase()}
-            </div>
-            <span className="text-[13.5px] font-medium">{user?.name}</span>
-          </div>
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text border border-border px-3 py-2 transition-colors"
-          >
-            Log out
-          </button>
+          {user ? (
+            <>
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 bg-accent flex items-center justify-center font-heading font-extrabold text-[12.5px] text-bg">
+                  {user?.name?.slice(0, 2).toUpperCase()}
+                </div>
+                <span className="text-[13.5px] font-medium">{user?.name}</span>
+              </div>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text border border-border px-3 py-2 transition-colors"
+              >
+                Log out
+              </button>
+            </>
+          ) : (
+            <Link to="/login" className="font-mono text-[11px] tracking-wider uppercase text-text bg-accent px-3 py-2 transition-colors">
+              Log in
+            </Link>
+          )}
         </div>
       </header>
 
@@ -143,7 +161,7 @@ export default function EventFeedPage() {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Club, title, or place"
+                placeholder="Event title"
                 className="w-full h-11 pl-3.5 pr-11 bg-surface border border-border text-text text-sm"
               />
               <span className="absolute right-3.5 top-3 font-mono text-xs text-textFaint">⌕</span>
@@ -172,7 +190,14 @@ export default function EventFeedPage() {
         {!loading && events.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {events.map((ev) => (
-              <EventCard key={ev._id} event={ev} onRsvp={handleRsvp} rsvping={rsvpingId === ev._id} />
+              <EventCard
+                key={ev._id}
+                event={ev}
+                onRsvp={handleRsvp}
+                rsvping={rsvpingId === ev._id}
+                canRsvp={!user || canRsvp}
+                rsvpLabel={rsvpLabel}
+              />
             ))}
           </div>
         )}

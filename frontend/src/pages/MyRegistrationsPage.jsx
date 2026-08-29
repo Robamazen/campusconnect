@@ -72,9 +72,6 @@ export default function MyRegistrationsPage() {
           <nav className="flex items-center gap-7">
             <Link to="/" className="font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text">Feed</Link>
             <a href="#my-registrations" className="font-mono text-[11px] tracking-wider uppercase text-text border-b-2 border-accent pb-1">My RSVPs</a>
-            {user?.role === 'clubLeader' && (
-              <Link to="/my-events" className="font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text">My Events</Link>
-            )}
           </nav>
         </div>
         <div className="flex items-center gap-4.5">

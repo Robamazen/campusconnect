@@ -15,7 +15,17 @@ function formatWhen(dateStr) {
   return d.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' }) + ' · ' + d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
 }
 
-export default function EventCard({ event, mode = 'public', onRsvp, onEdit, onDelete, rsvping, deleting }) {
+export default function EventCard({
+  event,
+  mode = 'public',
+  onRsvp,
+  onEdit,
+  onDelete,
+  rsvping,
+  deleting,
+  canRsvp = true,
+  rsvpLabel
+}) {
   const isOwner = mode === 'owner';
   const capacity = event.totalSlots;
   const taken = event.filledSlots || 0;
@@ -34,6 +44,7 @@ export default function EventCard({ event, mode = 'public', onRsvp, onEdit, onDe
     full: { label: 'Full', bg: 'transparent', border: '#26262E', color: '#5B5B66', arrow: '', disabled: true },
     closed: { label: 'Closed', bg: 'transparent', border: '#26262E', color: '#5B5B66', arrow: '', disabled: true }
   }[status];
+  const actionDisabled = cta.disabled || rsvping || !canRsvp;
 
   const capacityLine =
     capacity == null
@@ -115,13 +126,17 @@ export default function EventCard({ event, mode = 'public', onRsvp, onEdit, onDe
         {!isOwner && (
           <button
             type="button"
-            disabled={cta.disabled || rsvping}
+            disabled={actionDisabled}
             onClick={() => onRsvp?.(event)}
             className="cc-cta h-[38px] flex items-center gap-2 px-3.5 border font-heading font-bold text-[12.5px] disabled:cursor-not-allowed"
-            style={{ background: cta.bg, borderColor: cta.border, color: cta.color }}
+            style={{
+              background: actionDisabled && status === 'open' ? 'transparent' : cta.bg,
+              borderColor: actionDisabled && status === 'open' ? '#26262E' : cta.border,
+              color: actionDisabled && status === 'open' ? '#8E8E99' : cta.color
+            }}
           >
-            <span>{rsvping ? 'Sending…' : cta.label}</span>
-            {cta.arrow && <span className="cc-arrow text-sm transition-transform">{cta.arrow}</span>}
+            <span>{rsvping ? 'Sending…' : rsvpLabel || cta.label}</span>
+            {cta.arrow && !actionDisabled && <span className="cc-arrow text-sm transition-transform">{cta.arrow}</span>}
           </button>
         )}
       </div>

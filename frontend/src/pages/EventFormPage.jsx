@@ -28,7 +28,7 @@ export default function EventFormPage() {
   const isEditing = Boolean(id);
   const navigate = useNavigate();
   const reqInputRef = useRef(null);
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const pendingApproval = user?.role === 'clubLeader' && user?.status !== 'approved';
 
   const [form, setForm] = useState(BLANK);
@@ -124,6 +124,11 @@ export default function EventFormPage() {
 
   if (loading) return <div className="min-h-screen bg-bg" />;
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   if (pendingApproval) {
     return (
       <div className="min-h-screen bg-bg text-text font-body flex items-center justify-center px-6">
@@ -137,6 +142,13 @@ export default function EventFormPage() {
           <Link to="/" className="inline-flex h-12 items-center gap-2.5 px-5 mt-6 bg-accent font-heading font-bold text-sm text-bg">
             <span>Back to feed</span><span>→</span>
           </Link>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="block mx-auto mt-4 font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text border border-border px-3 py-2 transition-colors"
+          >
+            Log out
+          </button>
         </div>
       </div>
     );
@@ -147,7 +159,16 @@ export default function EventFormPage() {
   return (
     <div className="min-h-screen bg-bg text-text font-body">
       <section className="relative px-16 pt-11 pb-8 overflow-hidden border-b-2 border-borderMuted">
-        <Link to="/my-events" className="inline-block font-mono text-[10.5px] tracking-wider uppercase text-textMuted mb-6">← My events</Link>
+        <div className="flex items-center justify-between gap-6 mb-6">
+          <Link to="/my-events" className="inline-block font-mono text-[10.5px] tracking-wider uppercase text-textMuted">← My events</Link>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text border border-border px-3 py-2 transition-colors"
+          >
+            Log out
+          </button>
+        </div>
         <div className="flex items-end justify-between gap-12 flex-wrap">
           <div>
             <div className="font-mono text-[11px] tracking-[0.24em] uppercase text-accent mb-5">

@@ -19,7 +19,7 @@ function formatTime(dateStr) {
 
 export default function EventDetailsPage() {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const [event, setEvent] = useState(null);
@@ -68,6 +68,14 @@ export default function EventDetailsPage() {
   const isAdmin = user?.role === 'admin';
 
   const handleRsvp = async (event) => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    if (user.role !== 'student') {
+      setToast({ type: 'error', text: 'Only student accounts can RSVP to events.' });
+      return;
+    }
     setActing(true);
     try {
       const res = await api.post('/registrations', { eventId: event._id });
@@ -81,6 +89,11 @@ export default function EventDetailsPage() {
   };
 
   const handleDelete = () => setShowDeleteConfirm(true);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   const confirmDelete = async () => {
     setActing(true);
@@ -104,7 +117,22 @@ export default function EventDetailsPage() {
       )}
 
       <section className="relative px-16 pt-13 pb-10 overflow-hidden border-b-2 border-borderMuted">
-        <Link to="/" className="inline-block font-mono text-[10.5px] tracking-wider uppercase text-textMuted mb-7">← Back to feed</Link>
+        <div className="flex items-center justify-between gap-6 mb-7">
+          <Link to="/" className="inline-block font-mono text-[10.5px] tracking-wider uppercase text-textMuted">← Back to feed</Link>
+          {user ? (
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text border border-border px-3 py-2 transition-colors"
+            >
+              Log out
+            </button>
+          ) : (
+            <Link to="/login" className="font-mono text-[11px] tracking-wider uppercase text-text bg-accent px-3 py-2 transition-colors">
+              Log in
+            </Link>
+          )}
+        </div>
         <div className="flex items-center gap-3 mb-6 flex-wrap">
           <span className="font-mono text-[10px] tracking-wider uppercase px-[9px] py-[5px] bg-accent text-bg border border-accent">{event.category}</span>
           <span className="font-mono text-[10px] tracking-wider uppercase text-textFaint">{event.type}</span>
@@ -187,6 +215,8 @@ export default function EventDetailsPage() {
                   <AdminActions onDelete={handleDelete} acting={acting} />
                 ) : isOwner ? (
                   <OwnerActions event={event} onDelete={handleDelete} acting={acting} />
+                ) : user?.role === 'clubLeader' ? (
+                  <LeaderActions onAddToCalendar={() => downloadEventICS(event)} />
                 ) : (
                   <StudentActions
                     status={status}
@@ -268,7 +298,7 @@ function StudentActions({ status, nearlyFull, left, onRsvp, onAddToCalendar, act
   if (status === 'open') {
     return (
       <>
-        <PrimaryButton label={nearlyFull ? `RSVP now — ${left} spots left` : 'RSVP — hold my spot'} onClick={onRsvp} acting={acting} />
+        <PrimaryButton label={loggedIn ? (nearlyFull ? `RSVP now — ${left} spots left` : 'RSVP — hold my spot') : 'Log in to RSVP'} onClick={onRsvp} acting={acting} />
         <div className="mt-3.5"><OutlineButton label="Add to my calendar" trail="ICS" onClick={onAddToCalendar} /></div>
         <p className="mt-4 text-[12.5px] leading-relaxed text-textFaint">
           {loggedIn ? 'Cancel any time from My Registrations.' : 'Log in to RSVP to this event.'}
@@ -292,6 +322,20 @@ function StudentActions({ status, nearlyFull, left, onRsvp, onAddToCalendar, act
         RSVP closed
       </button>
       <p className="mt-4 text-[12.5px] leading-relaxed text-textFaint">This event has already run.</p>
+    </>
+  );
+}
+
+function LeaderActions({ onAddToCalendar }) {
+  return (
+    <>
+      <div className="flex gap-3 px-3.5 py-3 bg-bg border-l-2 border-accent mb-4">
+        <Aperture size={15} speed="3.4s" filled={false} />
+        <span className="text-[12.5px] leading-snug text-[#C9C9D1]">
+          Club leaders can browse this event, but RSVP is reserved for student accounts.
+        </span>
+      </div>
+      <OutlineButton label="Add to my calendar" trail="ICS" onClick={onAddToCalendar} />
     </>
   );
 }

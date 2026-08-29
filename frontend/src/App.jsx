@@ -7,6 +7,7 @@ import MyEventsPage from './pages/MyEventsPage'
 import MyRegistrationsPage from './pages/MyRegistrationsPage'
 import EventFormPage from './pages/EventFormPage'
 import EventRegistrantsPage from './pages/EventRegistrantsPage'
+import AdminDashboardPage from './pages/AdminDashboardPage'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -30,19 +31,36 @@ function RequireClubLeader({ children }) {
   return children;
 }
 
+function RequireStudent({ children }) {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.role !== 'student') return <Navigate to="/" replace />;
+  return children;
+}
+
+function RequireAdmin({ children }) {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.role !== 'admin') return <Navigate to="/" replace />;
+  return children;
+}
+
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<PublicOnlyRoute><AuthPage /></PublicOnlyRoute>} />
-          <Route path="/" element={<ProtectedRoute><EventFeedPage /></ProtectedRoute>} />
-          <Route path="/events/:id" element={<ProtectedRoute><EventDetailsPage /></ProtectedRoute>} />
-          <Route path="/my-events" element={<ProtectedRoute><MyEventsPage /></ProtectedRoute>} />
-          <Route path="/my-registrations" element={<ProtectedRoute><MyRegistrationsPage /></ProtectedRoute>} />
+          <Route path="/" element={<EventFeedPage />} />
+          <Route path="/events/:id" element={<EventDetailsPage />} />
+          <Route path="/my-events" element={<RequireClubLeader><MyEventsPage /></RequireClubLeader>} />
+          <Route path="/my-registrations" element={<RequireStudent><MyRegistrationsPage /></RequireStudent>} />
           <Route path="/events/new" element={<RequireClubLeader><EventFormPage /></RequireClubLeader>} />
           <Route path="/events/:id/edit" element={<RequireClubLeader><EventFormPage /></RequireClubLeader>} />
           <Route path="/events/:id/registrants" element={<ProtectedRoute><EventRegistrantsPage /></ProtectedRoute>} />
+          <Route path="/admin" element={<RequireAdmin><AdminDashboardPage /></RequireAdmin>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>
