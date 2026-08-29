@@ -13,11 +13,17 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Redirect to login on 401 — token expired or invalid
+// Redirect to login on 401 — token expired or invalid.
+// Excludes the auth endpoints themselves: a bad login/register attempt also
+// returns 401/400 from the server and must surface as a form error, not a
+// forced reload that wipes the error before it renders.
+const AUTH_ENDPOINTS = ['/auth/login', '/auth/register'];
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const isAuthRequest = AUTH_ENDPOINTS.some((path) => error.config?.url?.includes(path));
+    if (error.response?.status === 401 && !isAuthRequest) {
       localStorage.removeItem('cc_token');
       localStorage.removeItem('cc_user');
       window.location.href = '/login';
