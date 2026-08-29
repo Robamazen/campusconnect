@@ -4,6 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import Aperture from '../components/Aperture';
 import api from '../services/api';
 
+const IMAGE_BASE = '/images/New%20folder';
+
 const strengthLabels = [
   'Use 8+ characters',
   'Weak — add a capital or a number',
@@ -101,7 +103,12 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg text-text font-body flex items-center justify-center px-6 py-12">
+    <div
+      className="min-h-screen bg-bg text-text font-body flex items-center justify-center px-6 py-12 bg-cover bg-center"
+      style={{
+        backgroundImage: `linear-gradient(90deg, rgba(11,11,13,0.98) 0%, rgba(11,11,13,0.9) 52%, rgba(11,11,13,0.68) 100%), linear-gradient(0deg, rgba(11,11,13,0.96), rgba(11,11,13,0.42)), url('${IMAGE_BASE}/auth-bg.jpg')`
+      }}
+    >
       <div className="w-full max-w-md">
         <div className="flex items-center gap-3 mb-10">
           <Aperture size={30} speed="9s" />

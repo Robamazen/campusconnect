@@ -8,6 +8,16 @@ import api from '../services/api';
 import { downloadEventICS } from '../utils/ics';
 
 const CIRCUMFERENCE = 301.59; // 2πr for r=48
+const IMAGE_BASE = '/images/New%20folder';
+const CATEGORY_IMAGES = {
+  Academic: 'event-academic.jpg',
+  Tech: 'event-tech.jpg',
+  Sports: 'event-sports.jpg',
+  Arts: 'event-arts-social.jpg',
+  Social: 'event-arts-social.jpg',
+  Volunteering: 'event-volunteering.jpg',
+  Other: 'event-default.jpg'
+};
 
 function formatDate(dateStr) {
   const d = new Date(dateStr);
@@ -45,7 +55,7 @@ export default function EventDetailsPage() {
   useEffect(() => { fetchEvent(); }, [fetchEvent]);
 
   if (loading) return <div className="min-h-screen bg-bg" />;
-  if (!event) return <div className="min-h-screen bg-bg text-text p-16">Event not found.</div>;
+  if (!event) return <div className="min-h-screen bg-bg text-text p-5 sm:p-8 lg:p-16">Event not found.</div>;
 
   const capacity = event.totalSlots;
   const taken = event.filledSlots || 0;
@@ -66,6 +76,7 @@ export default function EventDetailsPage() {
 
   const isOwner = user?.role === 'clubLeader' && event.createdBy?._id === user?.id;
   const isAdmin = user?.role === 'admin';
+  const heroImage = CATEGORY_IMAGES[event.category] || CATEGORY_IMAGES.Other;
 
   const handleRsvp = async (event) => {
     if (!user) {
@@ -116,7 +127,12 @@ export default function EventDetailsPage() {
         </div>
       )}
 
-      <section className="relative px-16 pt-13 pb-10 overflow-hidden border-b-2 border-borderMuted">
+      <section
+        className="relative px-5 sm:px-8 lg:px-16 pt-10 lg:pt-13 pb-9 lg:pb-10 overflow-hidden border-b-2 border-borderMuted bg-cover bg-center"
+        style={{
+          backgroundImage: `linear-gradient(90deg, rgba(11,11,13,0.98) 0%, rgba(11,11,13,0.9) 44%, rgba(11,11,13,0.56) 100%), linear-gradient(0deg, rgba(11,11,13,0.9), rgba(11,11,13,0.14)), url('${IMAGE_BASE}/${heroImage}')`
+        }}
+      >
         <div className="flex items-center justify-between gap-6 mb-7">
           <Link to="/" className="inline-block font-mono text-[10.5px] tracking-wider uppercase text-textMuted">← Back to feed</Link>
           {user ? (
@@ -139,11 +155,11 @@ export default function EventDetailsPage() {
           <span className="w-px h-3.5 bg-borderMuted" />
           <span className="font-mono text-[10px] tracking-wider uppercase text-textFaint">Category assigned automatically</span>
         </div>
-        <h1 className="max-w-[19ch] font-heading font-black text-6xl md:text-7xl leading-[0.92] tracking-tight">{event.title}</h1>
+        <h1 className="max-w-[19ch] font-heading font-black text-4xl sm:text-6xl md:text-7xl leading-[0.98] sm:leading-[0.92] tracking-tight">{event.title}</h1>
       </section>
 
       <section className="grid grid-cols-1 lg:grid-cols-[1fr_400px]">
-        <div className="px-8 md:px-16 py-12 border-r border-borderMuted">
+        <div className="px-5 sm:px-8 md:px-16 py-10 lg:py-12 border-r border-borderMuted">
           <div className="flex items-center gap-4 pb-6.5 border-b border-borderMuted flex-wrap">
             <div className="w-11 h-11 flex-none bg-surface border border-border flex items-center justify-center font-heading font-extrabold text-[13px] text-accent">
               {event.club.slice(0, 2).toUpperCase()}
@@ -188,7 +204,7 @@ export default function EventDetailsPage() {
           </div>
         </div>
 
-        <aside className="px-8 md:px-16 lg:pr-16 lg:pl-10 py-12">
+        <aside className="px-5 sm:px-8 md:px-16 lg:pr-16 lg:pl-10 py-10 lg:py-12">
           <div className="lg:sticky lg:top-24">
             <div className="bg-surface border border-border p-7">
               <div className="flex items-center gap-5.5 pb-6 border-b border-borderMuted">

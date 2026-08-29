@@ -61,20 +61,20 @@ export default function MyRegistrationsPage() {
 
   return (
     <div className="min-h-screen bg-bg text-text font-body">
-      <header className="sticky top-0 z-20 flex items-center justify-between gap-8 px-16 py-5 border-b border-borderMuted bg-bg/92 backdrop-blur-md">
-        <div className="flex items-center gap-10">
+      <header className="sticky top-0 z-20 flex flex-col lg:flex-row lg:items-center justify-between gap-5 px-5 sm:px-8 lg:px-16 py-5 border-b border-borderMuted bg-bg/92 backdrop-blur-md">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-5 lg:gap-10 w-full lg:w-auto">
           <div className="flex items-center gap-3">
             <Aperture size={26} speed="9s" />
             <span className="font-mono text-[11.5px] tracking-[0.22em] uppercase">
               Campus<span className="text-textMuted">connect</span>
             </span>
           </div>
-          <nav className="flex items-center gap-7">
+          <nav className="flex flex-wrap items-center gap-4 lg:gap-7">
             <Link to="/" className="font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text">Feed</Link>
             <a href="#my-registrations" className="font-mono text-[11px] tracking-wider uppercase text-text border-b-2 border-accent pb-1">My RSVPs</a>
           </nav>
         </div>
-        <div className="flex items-center gap-4.5">
+        <div className="flex flex-wrap items-center gap-3 lg:gap-4.5 w-full lg:w-auto justify-between lg:justify-end">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-accent flex items-center justify-center font-heading font-extrabold text-[12.5px] text-bg">
               {user?.name?.slice(0, 2).toUpperCase()}
@@ -91,14 +91,14 @@ export default function MyRegistrationsPage() {
         </div>
       </header>
 
-      <section className="px-16 pt-13 pb-9 border-b-2 border-borderMuted">
+      <section className="px-5 sm:px-8 lg:px-16 pt-10 lg:pt-13 pb-9 border-b-2 border-borderMuted">
         <div className="font-mono text-[11px] tracking-[0.24em] uppercase text-accent mb-5.5">Your registrations</div>
-        <h1 className="font-heading font-black text-6xl leading-[0.94] tracking-tight">What you&apos;re signed up for.</h1>
+        <h1 className="font-heading font-black text-4xl sm:text-6xl leading-[0.98] sm:leading-[0.94] tracking-tight">What you&apos;re signed up for.</h1>
         <p className="mt-5 text-base leading-relaxed text-textMuted max-w-[52ch]">Every event you&apos;ve RSVPed to, across every club.</p>
       </section>
 
       {toast && (
-        <div className="px-16 pt-6">
+        <div className="px-5 sm:px-8 lg:px-16 pt-6">
           <div className={`font-mono text-xs px-4 py-3 border-l-2 bg-surface ${toast.type === 'error' ? 'border-accentLight text-accentLight' : 'border-accent text-text'}`}>
             {toast.text}
           </div>
@@ -106,8 +106,8 @@ export default function MyRegistrationsPage() {
       )}
 
       {loading ? null : registrations.length === 0 ? (
-        <section className="px-16 py-16">
-          <div className="flex items-center gap-16 p-16 bg-surface border border-border flex-wrap">
+        <section className="px-5 sm:px-8 lg:px-16 py-12 lg:py-16">
+          <div className="flex items-center gap-8 lg:gap-16 p-6 sm:p-10 lg:p-16 bg-surface border border-border flex-wrap">
             <div className="relative w-[148px] h-[148px] flex-none">
               <div className="absolute inset-0 rounded-full border-2 border-[#1C1C22]" />
               <div className="absolute inset-0 rounded-full border-2 border-transparent" style={{ borderTopColor: '#E91E8C', animation: 'cc-spin 16s linear infinite' }} />
@@ -124,7 +124,7 @@ export default function MyRegistrationsPage() {
           </div>
         </section>
       ) : (
-        <section className="px-16 pt-8 pb-22">
+        <section className="px-5 sm:px-8 lg:px-16 pt-8 pb-22">
           <div className="flex items-baseline justify-between gap-6 mb-5">
             <div className="font-mono text-[11px] tracking-wider uppercase text-textMuted">
               {filter === 'All' ? `All ${registrations.length} registrations` : `Showing ${filtered.length} ${filter.toLowerCase()}`}

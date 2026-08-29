@@ -158,7 +158,7 @@ export default function EventFormPage() {
 
   return (
     <div className="min-h-screen bg-bg text-text font-body">
-      <section className="relative px-16 pt-11 pb-8 overflow-hidden border-b-2 border-borderMuted">
+      <section className="relative px-5 sm:px-8 lg:px-16 pt-10 lg:pt-11 pb-8 overflow-hidden border-b-2 border-borderMuted">
         <div className="flex items-center justify-between gap-6 mb-6">
           <Link to="/my-events" className="inline-block font-mono text-[10.5px] tracking-wider uppercase text-textMuted">← My events</Link>
           <button
@@ -174,7 +174,7 @@ export default function EventFormPage() {
             <div className="font-mono text-[11px] tracking-[0.24em] uppercase text-accent mb-5">
               {form.club || 'Your club'} · {isEditing ? 'Editing' : 'New event'}
             </div>
-            <h1 className="font-heading font-black text-6xl leading-[0.94] tracking-tight">{isEditing ? 'Edit this event.' : 'Put something on the board.'}</h1>
+            <h1 className="font-heading font-black text-4xl sm:text-6xl leading-[0.98] sm:leading-[0.94] tracking-tight">{isEditing ? 'Edit this event.' : 'Put something on the board.'}</h1>
             <p className="mt-4.5 text-[15.5px] leading-relaxed text-textMuted max-w-[56ch]">
               {isEditing
                 ? `${original?.filledSlots || 0} students are already registered. Category re-runs automatically if you change the description.`
@@ -185,7 +185,7 @@ export default function EventFormPage() {
       </section>
 
       {saved && (
-        <div className="px-16 pt-6">
+        <div className="px-5 sm:px-8 lg:px-16 pt-6">
           <div className="flex items-center gap-5.5 p-5.5 bg-surface border border-border border-l-2 border-l-accent flex-wrap">
             <div className="relative w-13 h-13 flex-none" style={{ width: 52, height: 52 }}>
               <div className="absolute inset-1 rounded-full bg-accent" />
@@ -211,13 +211,13 @@ export default function EventFormPage() {
       )}
 
       {error && (
-        <div className="px-16 pt-6">
+        <div className="px-5 sm:px-8 lg:px-16 pt-6">
           <div className="font-mono text-xs text-accentLight border-l-2 border-accent bg-surface px-4 py-3">{error}</div>
         </div>
       )}
 
       <section className="grid grid-cols-1 lg:grid-cols-[1fr_380px]">
-        <div className="px-8 md:px-16 py-10 border-r border-borderMuted">
+        <div className="px-5 sm:px-8 md:px-16 py-10 border-r border-borderMuted">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5.5">
             <Field label="Event title">
               <input type="text" value={form.title} onChange={(e) => upd('title', e.target.value.slice(0, 90))} placeholder="What is it called?" className="w-full h-13 px-4 bg-surface border border-border text-text text-[15.5px]" style={{ height: 52 }} />
@@ -325,7 +325,7 @@ export default function EventFormPage() {
           </div>
         </div>
 
-        <aside className="px-8 md:px-16 lg:px-9 py-10">
+        <aside className="px-5 sm:px-8 md:px-16 lg:px-9 py-10">
           <div className="lg:sticky lg:top-6 flex flex-col gap-4">
             <div className="bg-surface border border-border p-5.5">
               <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-accent mb-5">Category</div>
