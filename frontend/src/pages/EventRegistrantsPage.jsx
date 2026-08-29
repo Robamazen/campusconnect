@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 
 const CIRCUMFERENCE = 182.2; // r=29
@@ -29,6 +30,8 @@ function downloadCSV(event, rows) {
 
 export default function EventRegistrantsPage() {
   const { id } = useParams();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,7 +60,7 @@ export default function EventRegistrantsPage() {
     setBusyId(registrationId);
     try {
       await api.put(`/registrations/${registrationId}`, { status });
-      setRows((rs) => rs.map((r) => (r._id === registrationId ? { ...r, status } : r)));
+      await fetchData();
     } catch (e) {
       setError(e.response?.data?.message || 'Update failed.');
     } finally {
@@ -72,8 +75,29 @@ export default function EventRegistrantsPage() {
     }
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   if (loading) return <div className="min-h-screen bg-bg" />;
-  if (!event) return <div className="min-h-screen bg-bg text-text p-16">{error || 'Event not found.'}</div>;
+  if (!event) {
+    return (
+      <div className="min-h-screen bg-bg text-text p-16">
+        <div className="flex items-center justify-between gap-6 mb-8">
+          <Link to="/" className="font-mono text-[10.5px] tracking-wider uppercase text-textMuted">← Back to feed</Link>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text border border-border px-3 py-2 transition-colors"
+          >
+            Log out
+          </button>
+        </div>
+        {error || 'Event not found.'}
+      </div>
+    );
+  }
 
   const counts = {
     All: rows.length,
@@ -97,7 +121,16 @@ export default function EventRegistrantsPage() {
       <section className="relative px-16 pt-8 pb-6.5 border-b-2 border-borderMuted overflow-hidden">
         <div className="flex items-end justify-between gap-12 flex-wrap">
           <div className="min-w-0">
-            <Link to={`/events/${id}`} className="inline-block font-mono text-[10.5px] tracking-wider uppercase text-textMuted mb-4">← {event.title} · event page</Link>
+            <div className="flex items-center justify-between gap-6 mb-4">
+              <Link to={`/events/${id}`} className="inline-block font-mono text-[10.5px] tracking-wider uppercase text-textMuted">← {event.title} · event page</Link>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="font-mono text-[11px] tracking-wider uppercase text-textFaint hover:text-text border border-border px-3 py-2 transition-colors"
+              >
+                Log out
+              </button>
+            </div>
             <div className="flex items-center gap-3 mb-3.5 flex-wrap">
               <span className="font-mono text-[10px] tracking-wider uppercase px-2.5 py-1.5 bg-accent text-bg">{event.category}</span>
               <span className="font-mono text-[10px] tracking-wider uppercase text-textMuted">
