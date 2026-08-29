@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import AuthPage from './pages/AuthPage'
 import EventFeedPage from './pages/EventFeedPage'
+import EventDetailsPage from './pages/EventDetailsPage'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -24,6 +25,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<PublicOnlyRoute><AuthPage /></PublicOnlyRoute>} />
           <Route path="/" element={<ProtectedRoute><EventFeedPage /></ProtectedRoute>} />
+          <Route path="/events/:id" element={<ProtectedRoute><EventDetailsPage /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>

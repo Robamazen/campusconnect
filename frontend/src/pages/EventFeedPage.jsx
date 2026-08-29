@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import EventCard from '../components/EventCard';
 import Aperture from '../components/Aperture';
+import RsvpModal from '../components/RsvpModal';
 import api from '../services/api';
 
 const CATEGORIES = ['All', 'Academic', 'Social', 'Sports', 'Tech', 'Arts', 'Volunteering', 'Other'];
@@ -23,6 +24,8 @@ export default function EventFeedPage() {
   const [loading, setLoading] = useState(true);
   const [rsvpingId, setRsvpingId] = useState(null);
   const [toast, setToast] = useState(null);
+  const [modal, setModal] = useState({ open: false, variant: 'success', event: null, registration: null, error: null });
+
 
   const fetchEvents = useCallback(async () => {
     setLoading(true);
@@ -47,13 +50,13 @@ export default function EventFeedPage() {
   }, [fetchEvents, search]);
 
   const handleRsvp = async (event) => {
-    setRsvpingId(event._id);
+    setRsvpingId(event._id); // or setActing(true) on Event Details
     try {
-      await api.post('/registrations', { eventId: event._id });
-      setToast({ type: 'success', text: `You're registered for ${event.title}.` });
-      fetchEvents(); // refresh so filledSlots reflects the new registration
+      const res = await api.post('/registrations', { eventId: event._id });
+      setModal({ open: true, variant: 'success', event, registration: res.data.registration });
+      fetchEvents(); // or fetchEvent() on Event Details — refresh so filledSlots updates behind the modal
     } catch (e) {
-      setToast({ type: 'error', text: e.response?.data?.message || 'RSVP failed.' });
+      setModal({ open: true, variant: 'error', event, error: e.response?.data?.message });
     } finally {
       setRsvpingId(null);
     }
@@ -200,6 +203,15 @@ export default function EventFeedPage() {
           </div>
         )}
       </section>
+
+      <RsvpModal
+        open={modal.open}
+        variant={modal.variant}
+        event={modal.event}
+        registration={modal.registration}
+        errorMessage={modal.error}
+        onClose={() => setModal({ ...modal, open: false })}
+      />
     </div>
   );
 }
