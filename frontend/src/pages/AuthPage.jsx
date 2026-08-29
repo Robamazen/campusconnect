@@ -150,7 +150,7 @@ export default function AuthPage() {
                 value={loginForm.email}
                 onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
                 placeholder="you@example.com"
-                className="w-full h-[52px] px-4 bg-surface border border-border text-text text-[15.5px] focus-visible:outline-2 focus-visible:outline-accent"
+                className="w-full h-13 px-4 bg-surface border border-border text-text text-[15.5px] focus-visible:outline-2 focus-visible:outline-accent"
               />
             </Field>
 
